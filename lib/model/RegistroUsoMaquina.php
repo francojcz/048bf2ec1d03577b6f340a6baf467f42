@@ -445,7 +445,7 @@ class RegistroUsoMaquina extends BaseRegistroUsoMaquina
 
         if ($minutosInicio == 0)
         {
-            $tf = 0;
+            $tf = $minutosFin;
             return $tf;
         }
 

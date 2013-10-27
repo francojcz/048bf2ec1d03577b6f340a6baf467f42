@@ -471,7 +471,8 @@ class reporte_eventoActions extends sfActions
 			$datos;
 			try{
 				$conexion = new Criteria();
-				$conexion->addDescendingOrderByColumn(CategoriaEventoPeer::CAT_NOMBRE);
+                                $conexion->add(CategoriaEventoPeer::CAT_ELIMINADO, 0);
+				$conexion->addAscendingOrderByColumn(CategoriaEventoPeer::CAT_NOMBRE);
 				$categorias = CategoriaEventoPeer::doSelect($conexion);
 					
 				foreach($categorias as $temporal)

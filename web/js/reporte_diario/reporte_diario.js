@@ -311,18 +311,6 @@ var rdtiemp_colmodel = new Ext.grid.ColumnModel({
         hidden: true,
         renderer: generarRenderer('#bfbfbf', '#000000')
     }, {
-        dataIndex: 'rdtiemp_TP_metodo',
-        header: 'TP <br/>(Hrs.)<br/>M&eacute;todo',
-        tooltip: 'Tiempo programado m&eacute;todo',
-        width: 60,
-        renderer: generarRenderer('#72a8cd', '#000000')
-    }, {
-        dataIndex: 'rdtiemp_TP_dia',
-        header: 'TP <br/>(Hrs.)<br/>D&iacute;a',
-        tooltip: 'Tiempo programado d&iacute;a',
-        width: 60,
-        renderer: generarRenderer('#72a8cd', '#000000')
-    }, {
         dataIndex: 'rdtiemp_TNP_metodo',
         header: 'TNP <br/>(Hrs.)<br/>M&eacute;todo',
         tooltip: 'Tiempo no programado m&eacute;todo',
@@ -359,6 +347,30 @@ var rdtiemp_colmodel = new Ext.grid.ColumnModel({
         width: 60,
         renderer: generarRenderer('#ff5454', '#000000')
     }, {
+        dataIndex: 'rdtiemp_TO_metodo',
+        header: 'TO <br/>(Hrs.)<br/>M&eacute;todo',
+        tooltip: 'Tiempo operativo m&eacute;todo',
+        width: 60,
+        renderer: generarRenderer('#72a8cd', '#000000')
+    }, {
+        dataIndex: 'rdtiemp_TO_dia',
+        header: 'TO<br/> (Hrs.)<br/>D&iacute;a',
+        tooltip: 'Tiempo de operativo d&iacute;a',
+        width: 60,
+        renderer: generarRenderer('#72a8cd', '#000000')
+    }, {
+        dataIndex: 'rdtiemp_TP_metodo',
+        header: 'TP <br/>(Hrs.)<br/>M&eacute;todo',
+        tooltip: 'Tiempo programado m&eacute;todo',
+        width: 60,
+        renderer: generarRenderer('#72a8cd', '#000000')
+    }, {
+        dataIndex: 'rdtiemp_TP_dia',
+        header: 'TP <br/>(Hrs.)<br/>D&iacute;a',
+        tooltip: 'Tiempo programado d&iacute;a',
+        width: 60,
+        renderer: generarRenderer('#72a8cd', '#000000')
+    }, {
         dataIndex: 'rdtiemp_TF_metodo',
         header: 'TF<br/> (Hrs)<br/>M&eacute;todo',
         tooltip: 'Tiempo de funcionamiento m&eacute;todo',
@@ -371,19 +383,6 @@ var rdtiemp_colmodel = new Ext.grid.ColumnModel({
         width: 60,
         renderer: generarRenderer('#f0a05f', '#000000')
     }, {
-        dataIndex: 'rdtiemp_TO_metodo',
-        header: 'TO <br/>(Hrs.)<br/>M&eacute;todo',
-        tooltip: 'Tiempo operativo m&eacute;todo',
-        width: 60,
-        renderer: generarRenderer('#72a8cd', '#000000')
-    }, {
-        dataIndex: 'rdtiemp_TO_dia',
-        header: 'TO<br/> (Hrs.)<br/>D&iacute;a',
-        tooltip: 'Tiempo de operativo d&iacute;a',
-        width: 60,
-        renderer: generarRenderer('#72a8cd', '#000000')
-    },
-    {
         dataIndex: 'observaciones',
         header: 'Observaciones',
         tooltip: 'Observaciones',

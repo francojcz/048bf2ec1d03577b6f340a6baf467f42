@@ -1,4 +1,3 @@
-﻿
 var emplusu_password_valor_trae = '';
 
 var ayuda_emplusu_usu_codigo = 'Id del usuario';

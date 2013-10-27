@@ -698,7 +698,7 @@ class reporte_graficomensualActions extends sfActions
 			$datos['TPNP'] = $tpnp_mes;
 			$datos['TPP'] = $tpp_mes;
 			$datos['TO'] = $to_mes;
-//			$datos['TF'] = $tf_mes;
+			$datos['TF'] = $tf_mes;
 			$datos['HorasActivas'] = $tiempoCalendario;
 
 		}catch (Exception $excepcion)

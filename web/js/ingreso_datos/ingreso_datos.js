@@ -162,12 +162,12 @@ Ext.onReady(function()
       align : 'center'
     },
     {
-      header : '<h3>Info. de<br>system<br>suitability</h3>',
+      header : '<h3>Informaci&oacute;n<br>system<br>suitability</h3>',
       colspan : 2,
       align : 'center'
     },
     {
-      header : '<h3>Informaci&oacute;n<br>de curva de<br>calibraci&oacute;n</h3>',
+      header : '<h3>Informaci&oacute;n<br>estándares de<br>calibraci&oacute;n</h3>',
       colspan : (inyeccionesEstandarPromedio + 1),
       align : 'center'
     },
@@ -177,7 +177,7 @@ Ext.onReady(function()
       align : 'center'
     },
     {
-      header : '<h3>Informaci&oacute;n<br>de corrida<br>anal&iacute;tica</h3>',
+      header : '<h3>Inicio y fin<br>de an&aacute;lisis</h3>',
       colspan : 2,
       align : 'center'
     },
@@ -192,7 +192,64 @@ Ext.onReady(function()
       align : 'center'
     }]]
   });
+  
+  var columnInfoMuestras = new Ext.ux.grid.ColumnHeaderGroup(
+  {
+    rows : [[
+    {
+      header : '1',
+      colspan : 3,
+      align : 'center'
+    },
+    {
+      header : '2',
+      colspan : 3,
+      align : 'center'
+    },
+    {
+      header : '3',
+      colspan : 3,
+      align : 'center'
+    },
+    {
+      header : '4',
+      colspan : 3,
+      align : 'center'
+    },
+    {
+      header : '5',
+      colspan : 3,
+      align : 'center'
+    },
+    {
+      header : '6',
+      colspan : 3,
+      align : 'center'
+    }
+    ]]
+  });
 
+  var metodosinorden_datastore = new Ext.data.Store(
+  {
+    proxy : new Ext.data.HttpProxy(
+    {
+      url : getAbsoluteUrl('ingreso_datos', 'listarMetodosSinOrden'),
+      method : 'POST'
+    }),
+    reader : new Ext.data.JsonReader(
+    {
+      root : 'data'
+    }, [
+    {
+      name : 'codigo',
+      type : 'integer'
+    },
+    {
+      name : 'nombre',
+      type : 'string'
+    }])
+  });
+  
   var metodos_datastore = new Ext.data.Store(
   {
     proxy : new Ext.data.HttpProxy(
@@ -213,6 +270,7 @@ Ext.onReady(function()
       type : 'string'
     }])
   });
+  
 
   var datastore = new Ext.data.Store(
   {
@@ -239,9 +297,9 @@ Ext.onReady(function()
       {
         recargarDatosMetodos();
       },
-      //            blur: function(){
-      //                recargarDatosMetodos();
-      //            },
+      // blur: function(){
+      // recargarDatosMetodos();
+      // },
       specialkey : function(field, e)
       {
         if(e.getKey() == e.ENTER)
@@ -314,6 +372,29 @@ Ext.onReady(function()
     redirigirSiSesionExpiro();
     if(maquina_combobox.isValid() && fechaField.isValid())
     {
+      metodosinorden_datastore.load(
+      {
+        callback : function()
+        {
+          if(maquina_combobox.getValue() != '')
+          {
+            var params =
+            {
+              'codigo_maquina' : maquina_combobox.getValue(),
+              'fecha' : fechaField.getValue()
+            };
+            if(esAdministrador && operario_field.getValue != '')
+            {
+              params['codigo_operario'] = operario_field.getValue();
+            }
+            datastore.load(
+            {
+              callback : callback,
+              params : params
+            });
+          }
+        }
+      });
       metodos_datastore.load(
       {
         callback : function()
@@ -346,8 +427,8 @@ Ext.onReady(function()
         so.addVariable("settings_file", encodeURIComponent(getAbsoluteUrl('ingreso_datos', 'generarConfiguracionGrafico?codigo_maquina=' + maquina_combobox.getValue() + '&fecha=' + Ext.util.Format.date(fechaField.getValue(), 'Y-m-d'))));
         so.addVariable("data_file", encodeURIComponent(getAbsoluteUrl('ingreso_datos', 'generarDatosGrafico?codigo_maquina=' + maquina_combobox.getValue() + '&fecha=' + Ext.util.Format.date(fechaField.getValue(), 'Y-m-d'))));
         so.addVariable("preloader_color", "#999999");
-        so.write("flashcontent");        
-      } 
+        so.write("flashcontent");
+      }
       
       var flashContent1 = document.getElementById("flashcontent1");
       if(flashContent1)
@@ -358,8 +439,8 @@ Ext.onReady(function()
         so1.addVariable("settings_file", encodeURIComponent(getAbsoluteUrl('ingreso_datos', 'generarConfiguracionGrafico1?codigo_maquina=' + maquina_combobox.getValue() + '&fecha=' + Ext.util.Format.date(fechaField.getValue(), 'Y-m-d'))));
         so1.addVariable("data_file", encodeURIComponent(getAbsoluteUrl('ingreso_datos', 'generarDatosGrafico1?codigo_maquina=' + maquina_combobox.getValue() + '&fecha=' + Ext.util.Format.date(fechaField.getValue(), 'Y-m-d'))));
         so1.addVariable("preloader_color", "#999999");
-        so1.write("flashcontent1");        
-      } 
+        so1.write("flashcontent1");
+      }
       Ext.Ajax.request(
       {
         url : getAbsoluteUrl('ingreso_datos', 'calcularTiempoDisponibleDia'),
@@ -757,7 +838,7 @@ Ext.onReady(function()
       header : 'Nombre del evento',
       tooltip : 'Nombre del evento',
       width : 300,
-      align : 'left',
+      align : 'center',
       editor : new Ext.form.ComboBox(
       {
         store : eventos_datastore_combo,
@@ -816,7 +897,7 @@ Ext.onReady(function()
       header : 'Observaciones',
       tooltip : 'Cualquier detalle adicional',
       width : 300,
-      align : 'left',
+      align : 'center',
       editor : new Ext.form.TextField()
     }]
   });
@@ -866,7 +947,7 @@ Ext.onReady(function()
 
   datastore_calculadora1.loadData(
   {
-    data : [    
+    data : [
     {
       'tiempo_disponible_horas' : '',
       'tiempo_disponible_minutos' : ''
@@ -1125,10 +1206,10 @@ Ext.onReady(function()
     align : 'center',
     renderer : function(value)
     {
-      var index = metodos_datastore.find('codigo', value);
+      var index = metodosinorden_datastore.find('codigo', value);
       if(index != -1)
       {
-        var record = metodos_datastore.getAt(index);
+        var record = metodosinorden_datastore.getAt(index);
         var renderer = generarRenderer('#bfbfbf', '#000000', '#bfbfbf', '#000000');
         return renderer(record.get('nombre'));
       } else
@@ -1136,16 +1217,16 @@ Ext.onReady(function()
         return '';
       }
     }
-    //        ,
-    //        editor: new Ext.form.ComboBox({
-    //            store: metodos_datastore,
-    //            displayField: 'nombre',
-    //            valueField: 'codigo',
-    //            mode: 'local',
-    //            triggerAction: 'all',
-    //            forceSelection: true,
-    //            allowBlank: false
-    //        })
+    // ,
+    // editor: new Ext.form.ComboBox({
+    // store: metodosinorden_datastore,
+    // displayField: 'nombre',
+    // valueField: 'codigo',
+    // mode: 'local',
+    // triggerAction: 'all',
+    // forceSelection: true,
+    // allowBlank: false
+    // })
   },
   {
     dataIndex : 'tiempo_entre_metodos',
@@ -1164,9 +1245,9 @@ Ext.onReady(function()
   },
   {
     dataIndex : 'cambio_metodo_ajuste',
-    header : 'Cambio<br>método y<br>ajuste<br>(Min)',
+    header : 'Cambio<br>método<br>(alistamiento)<br>(Min)',
     tooltip : 'Cambio de método y ajustes',
-    width : 55,
+    width : 75,
     align : 'center',
     editor :
     {
@@ -1192,7 +1273,7 @@ Ext.onReady(function()
   },
   {
     dataIndex : 'numero_inyecciones_ss',
-    header : 'No.<br>de<br>iny.',
+    header : 'No.<br>inyec.',
     tooltip : 'N&uacute;mero de inyecciones',
     width : 44,
     align : 'center',
@@ -1224,7 +1305,7 @@ Ext.onReady(function()
     columns.push(
     {
       dataIndex : 'numero_inyecciones_estandar' + i,
-      header : 'No.<br>inye.<br>stnd.<br>No. ' + i,
+      header : 'No.<br>inyec.<br>Std. ' + i,
       tooltip : 'N&uacute;mero de inyecciones del estándar No. ' + i,
       width : 44,
       align : 'center',
@@ -1251,12 +1332,12 @@ Ext.onReady(function()
   columns.push(
   {
     dataIndex : 'tiempo_corrida_producto',
-    header : 'T. C.<br>prod.<br>(Min)',
-    tooltip : 'Tiempo de corrida',
+    header : '<a style="color:#B80000;">T. C.<br>Prod.<br>(Min)</a>',
+    tooltip : 'Tiempo de corrida',    
     width : 44,
     align : 'center',
     editor :
-    {
+    {    
       xtype : 'numberfield',
       allowNegative : false,
       maxValue : 100000
@@ -1265,7 +1346,7 @@ Ext.onReady(function()
   },
   {
     dataIndex : 'numero_muestras_producto',
-    header : 'No.<br>mue.<br>del<br>prod.',
+    header : '<a style="color:#B80000;">No.<br>mues.<br>del<br>Prod.</a>',
     tooltip : 'N&uacute;mero de muestras del producto',
     width : 44,
     align : 'center',
@@ -1279,7 +1360,7 @@ Ext.onReady(function()
   },
   {
     dataIndex : 'numero_inyecciones_x_muestra_producto',
-    header : 'No.<br>inye.<br>x<br>mue.',
+    header : '<a style="color:#B80000;">No.<br>inyec.<br>x<br>mues.</a>',
     tooltip : 'N&uacute;mero de muestras del producto',
     width : 44,
     align : 'center',
@@ -1293,7 +1374,7 @@ Ext.onReady(function()
   },
   {
     dataIndex : 'tiempo_corrida_estabilidad',
-    header : 'T. C.<br>estb.<br>(Min)',
+    header : '<a style="color:#0033CC;">T. C.<br>Estb.<br>(Min)</a>',
     tooltip : 'Tiempo de corrida',
     width : 44,
     align : 'center',
@@ -1307,7 +1388,7 @@ Ext.onReady(function()
   },
   {
     dataIndex : 'numero_muestras_estabilidad',
-    header : 'No.<br>mue.<br>de<br>estb.',
+    header : '<a style="color:#0033CC;">No.<br>mues.<br>de<br>Estb.</a>',
     tooltip : 'N&uacute;mero de muestras de estabilidad',
     width : 44,
     align : 'center',
@@ -1321,7 +1402,7 @@ Ext.onReady(function()
   },
   {
     dataIndex : 'numero_inyecciones_x_muestra_estabilidad',
-    header : 'No.<br>inye.<br>x<br>mue.',
+    header : '<a style="color:#0033CC;">No.<br>inyec.<br>x<br>mues.</a>',
     tooltip : 'N&uacute;mero de muestras de estabilidad',
     width : 44,
     align : 'center',
@@ -1335,7 +1416,7 @@ Ext.onReady(function()
   },
   {
     dataIndex : 'tiempo_corrida_materia_prima',
-    header : 'T. C.<br>Mo.<br>Po.<br>(Min)',
+    header : '<a style="color:#004C00;">T. C.<br>Mo.<br>Po.<br>(Min)</a>',
     tooltip : 'Tiempo de corrida',
     width : 44,
     align : 'center',
@@ -1349,7 +1430,7 @@ Ext.onReady(function()
   },
   {
     dataIndex : 'numero_muestras_materia_prima',
-    header : 'No.<br>mue.<br>Mo.<br>Po.',
+    header : '<a style="color:#004C00;">No.<br>mues.<br>Mo.<br>Po.</a>',
     tooltip : 'N&uacute;mero de muestras de materia prima',
     width : 44,
     align : 'center',
@@ -1363,7 +1444,7 @@ Ext.onReady(function()
   },
   {
     dataIndex : 'numero_inyecciones_x_muestra_materia_prima',
-    header : 'No.<br>inye.<br>x<br>mue.',
+    header : '<a style="color:#004C00;">No.<br>inyec.<br>x<br>mues.</a>',
     tooltip : 'N&uacute;mero de muestras de materia prima',
     width : 44,
     align : 'center',
@@ -1377,7 +1458,7 @@ Ext.onReady(function()
   },
   {
     dataIndex : 'tiempo_corrida_pureza',
-    header : 'T. C.<br>pureza<br>(Min)',
+    header : '<a style="color:#8B4513;">T. C.<br>Pureza<br>Crom.<br>(Min)</a>',
     tooltip : 'Tiempo de corrida',
     width : 44,
     align : 'center',
@@ -1391,7 +1472,7 @@ Ext.onReady(function()
   },
   {
     dataIndex : 'numero_muestras_pureza',
-    header : 'No.<br>mue.<br>pur.',
+    header : '<a style="color:#8B4513;">No.<br>mues.<br>Pureza<br>Crom.</a>',
     tooltip : 'N&uacute;mero de muestras pureza',
     width : 44,
     align : 'center',
@@ -1405,7 +1486,7 @@ Ext.onReady(function()
   },
   {
     dataIndex : 'numero_inyecciones_x_muestra_pureza',
-    header : 'No.<br>inye.<br>x<br>mue.',
+    header : '<a style="color:#8B4513;">No.<br>inyec.<br>x<br>mues.</a>',
     tooltip : 'N&uacute;mero de muestras de pureza',
     width : 44,
     align : 'center',
@@ -1419,7 +1500,7 @@ Ext.onReady(function()
   },
   {
     dataIndex : 'tiempo_corrida_disolucion',
-    header : 'T. C.<br>diso.<br>(Min)',
+    header : '<a style="color:#006666;">T. C.<br>Disol.<br>(Min)</a>',
     tooltip : 'Tiempo de corrida',
     width : 44,
     align : 'center',
@@ -1433,7 +1514,7 @@ Ext.onReady(function()
   },
   {
     dataIndex : 'numero_muestras_disolucion',
-    header : 'No.<br>mue.<br>diso.',
+    header : '<a style="color:#006666;">No.<br>mues.<br>Disol.</a>',
     tooltip : 'N&uacute;mero de muestras disolucion',
     width : 44,
     align : 'center',
@@ -1447,7 +1528,7 @@ Ext.onReady(function()
   },
   {
     dataIndex : 'numero_inyecciones_x_muestra_disolucion',
-    header : 'No.<br>inye.<br>x<br>mue.',
+    header : '<a style="color:#006666;">No.<br>inyec.<br>x<br>mues.</a>',
     tooltip : 'N&uacute;mero de muestras de disolucion',
     width : 44,
     align : 'center',
@@ -1461,7 +1542,7 @@ Ext.onReady(function()
   },
   {
     dataIndex : 'tiempo_corrida_uniformidad',
-    header : 'T. C.<br>uni.<br>(Min)',
+    header : '<a style="color:#E63E00;">T. C.<br>Unif.<br>Cont.<br>(Min)</a>',
     tooltip : 'Tiempo de corrida',
     width : 44,
     align : 'center',
@@ -1475,7 +1556,7 @@ Ext.onReady(function()
   },
   {
     dataIndex : 'numero_muestras_uniformidad',
-    header : 'No.<br>mue.<br>uni.',
+    header : '<a style="color:#E63E00;">No.<br>mues.<br>Unif.<br>Cont.</a>',
     tooltip : 'N&uacute;mero de muestras uniformidad',
     width : 44,
     align : 'center',
@@ -1489,7 +1570,7 @@ Ext.onReady(function()
   },
   {
     dataIndex : 'numero_inyecciones_x_muestra_uniformidad',
-    header : 'No.<br>inye.<br>x<br>mue.',
+    header : '<a style="color:#E63E00;">No.<br>inyec.<br>x<br>mues.</a>',
     tooltip : 'N&uacute;mero de muestras de uniformidad',
     width : 44,
     align : 'center',
@@ -1596,7 +1677,7 @@ Ext.onReady(function()
             break;
           case '3':
             mensaje = 'Su perfil de usuario no está autorizado para crear registros';
-            break;          
+            break;
         }
         if(mensaje != null)
         {
@@ -1688,14 +1769,14 @@ Ext.onReady(function()
       header : 'Nombre de usuario',
       tooltip : 'Nombre de usuario',
       width : 120,
-      align : 'left'
+      align : 'center'
     },
     {
       dataIndex : 'nombre_campo',
       header : 'Nombre del campo',
       tooltip : 'Nombre del campo',
       width : 140,
-      align : 'left'
+      align : 'center'
     },
     {
       dataIndex : 'valor_antiguo',
@@ -1730,7 +1811,7 @@ Ext.onReady(function()
       header : 'Causa',
       tooltip : 'Causa',
       width : 140,
-      align : 'left'
+      align : 'center'
     }]
   });
 
@@ -1823,6 +1904,8 @@ Ext.onReady(function()
       });
     }
   }
+  
+  
   var grid = new Ext.grid.EditorGridPanel(
   {
     autoWidth : true,
@@ -1832,7 +1915,7 @@ Ext.onReady(function()
     store : datastore,
     stripeRows : true,
     frame : true,
-	border : true,
+    border : true,
     autoScroll : true,
     columnLines : true,
     disabled : true,
@@ -1966,10 +2049,10 @@ Ext.onReady(function()
         }
       }
     },'-',
-	{
+{
             xtype : 'button',
             text : 'Dividir registro',
-			iconCls : 'calcular',
+iconCls : 'calcular',
             tooltip : 'Pulse este botón para dividir el último registro del día',
             width : 70,
             handler : function()
@@ -2075,7 +2158,7 @@ Ext.onReady(function()
     xtype : 'textfield',
     fieldLabel : 'Hora',
     width : 97,
-    //        value: horas + ':' + minutos,
+    // value: horas + ':' + minutos,
     readOnly : true
   });
 
@@ -2136,6 +2219,7 @@ Ext.onReady(function()
         type : 'string'
       }])
     });
+    
     operario_field = new Ext.form.ComboBox(
     {
       fieldLabel : 'Analista',
@@ -2186,7 +2270,7 @@ Ext.onReady(function()
 
   var panelPrincipal = new Ext.FormPanel(
   {
-    //   renderTo: 'panel_principal',
+    // renderTo: 'panel_principal',
     border : false,
     frame : false,
     layout : 'border',
@@ -2222,8 +2306,7 @@ Ext.onReady(function()
           items : [fechaField, horaField]
         },
         {
-          width : '140',
-          layout : 'form',
+          width : '250',
           layout : 'column',
           //hideLabel: true,
           items : [
@@ -2235,13 +2318,13 @@ Ext.onReady(function()
           },
           {
             xtype : 'panel',
-            columnWidth : '.5',
+            //columnWidth : '.3',
             items : [
             {
               xtype : 'button',
               text : 'Reportes',
               tooltip : 'Pulse este botón para ver los reportes',
-              width : 70,
+              width : 60,
               iconCls : 'reportes',
               handler : function()
               {
@@ -2251,9 +2334,9 @@ Ext.onReady(function()
             }]
           },
           {
-            columnWidth : '.5',
+            //columnWidth : '.3',
             xtype : 'panel',
-            padding : '0px 0px 0px 4px',
+            padding : '0px 0px 0px 10px',
             items : [
             {
               xtype : 'button',
@@ -2266,7 +2349,25 @@ Ext.onReady(function()
                 window.open(urlWeb + 'manual-tpm/main.html');
               }
             }
-			]
+           ]
+          },
+          {
+            //columnWidth : '.3',            
+            xtype : 'panel',
+            padding : '0px 0px 0px 10px',
+            items : [
+            {
+              xtype : 'button',
+              text : 'Videotutorial',
+              iconCls : 'historial',
+              tooltip : 'Pulse este botón para ver el videotutorial',
+              width : 90,
+              handler : function()
+              {
+                window.open(urlWeb + 'videos/Analista.mp4');
+              }
+            }
+           ]
           }]
         },
         {
@@ -2279,7 +2380,7 @@ Ext.onReady(function()
             padding : '0px 0px 4px 0px',
             items : [
             
-			{
+{
               xtype : 'button',
               text : 'Salir',
               tooltip : 'Pulse este botón para salir del sistema',
@@ -2290,7 +2391,7 @@ Ext.onReady(function()
                 cerrarSesion();
               }
             }
-			]
+]
           }
           // {
           // xtype : 'button',
@@ -2414,7 +2515,7 @@ Ext.onReady(function()
       height : 200,
       frame : true,
       collapsible : true,
-      collapsed : false,      
+      collapsed : false,
       split : true,
       layout: 'column',
       items: [{

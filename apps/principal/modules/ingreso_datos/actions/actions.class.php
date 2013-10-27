@@ -62,7 +62,19 @@ class ingreso_datosActions extends sfActions
         $registroSegundoDia -> setRumMaqCodigo($registro -> getRumMaqCodigo());
         $registroSegundoDia -> setRumMetCodigo($registro -> getRumMetCodigo());
         $registroSegundoDia -> setRumEliminado(FALSE);
-		$registroSegundoDia -> setRumUsuCodigo($registro -> getRumUsuCodigo());
+	$registroSegundoDia -> setRumUsuCodigo($registro -> getRumUsuCodigo());
+        
+        //Cambios: 16 de Septiembre de 2013
+        $registroSegundoDia -> setRumTiempoCorridaSistema($registro ->getRumTiempoCorridaSistema());
+        $registroSegundoDia -> setRumTiempoCorridaCurvas($registro ->getRumTiempoCorridaCurvas());
+        $registroSegundoDia -> setRumTiempoCorridaSistemaEst($registro ->getRumTiempoCorridaSistemaEst());
+        $registroSegundoDia -> setRumTiempoCorridaCurvasEsta($registro ->getRumTiempoCorridaCurvasEsta());
+        $registroSegundoDia -> setRumTcProductoTerminadoEsta($registro ->getRumTcProductoTerminadoEsta());
+        $registroSegundoDia -> setRumTcEstabilidadEstandar($registro ->getRumTcEstabilidadEstandar());
+        $registroSegundoDia -> setRumTcMateriaPrimaEstandar($registro ->getRumTcMateriaPrimaEstandar());
+        $registroSegundoDia -> setRumTcPurezaEstandar($registro ->getRumTcPurezaEstandar());
+        $registroSegundoDia -> setRumTcDisolucionEstandar($registro ->getRumTcDisolucionEstandar());
+        $registroSegundoDia -> setRumTcUniformidadEstandar($registro ->getRumTcUniformidadEstandar());
 
         list($registro, $registroSegundoDia, $deficitTiempo) = RegistroUsoMaquinaPeer::dividirFallas($deficitTiempo, $registro, $registroSegundoDia);
 
@@ -318,23 +330,23 @@ class ingreso_datosActions extends sfActions
 
         $this -> renderText('<graph>
 			<type>column</type>
-      <title>Tiempo no programado</title>
+      <title>TNP</title>
       <color>#ffdc44</color>
       </graph>');
       $this -> renderText('<graph>
-      <title>Tiempo parada programada</title>
+      <title>TPP</title>
       <color>#47d552</color>
       </graph>');
         $this -> renderText('<graph>
-      <title>Tiempo parada no programada</title>
+      <title>TPNP</title>
       <color>#ff5454</color>
       </graph>');
         $this -> renderText('<graph>
-      <title>Tiempo operativo</title>
+      <title>TO</title>
       <color>#72a8cd</color>
       </graph>');
         $this -> renderText('<graph>
-      <title>Tiempo de parada no programada</title>
+      <title>TPNP</title>
       <color>#ff5454</color>
       <visible_in_legend>false</visible_in_legend>
       </graph>');
@@ -350,7 +362,7 @@ class ingreso_datosActions extends sfActions
         foreach ($registros as $registro)
         {
             $this -> renderText('<graph>
-			<title>Tiempo no programado</title>
+			<title>TNP</title>
 			<color>#ffdc44</color>
 			<visible_in_legend>false</visible_in_legend>
 			</graph>');
@@ -382,7 +394,7 @@ class ingreso_datosActions extends sfActions
         }
 
         $this -> renderText('<graph>
-      <title>Tiempo no programado</title>
+      <title>TNP</title>
       <color>#ffdc44</color>
       <visible_in_legend>false</visible_in_legend>
       </graph>');
@@ -494,23 +506,23 @@ class ingreso_datosActions extends sfActions
 
         $this -> renderText('<graph>
 			<type>column</type>
-      <title>Tiempo no programado</title>
+      <title>TNP</title>
       <color>#ffdc44</color>
       </graph>');
       $this -> renderText('<graph>
-      <title>Tiempo parada programada</title>
+      <title>TPP</title>
       <color>#47d552</color>
       </graph>');
         $this -> renderText('<graph>
-      <title>Tiempo parada no programada</title>
+      <title>TPNP</title>
       <color>#ff5454</color>
       </graph>');
         $this -> renderText('<graph>
-      <title>Tiempo operativo</title>
+      <title>TO</title>
       <color>#72a8cd</color>
       </graph>');
         $this -> renderText('<graph>
-      <title>Tiempo de parada no programada</title>
+      <title>TPNP</title>
       <color>#ff5454</color>
       <visible_in_legend>false</visible_in_legend>
       </graph>');
@@ -526,7 +538,7 @@ class ingreso_datosActions extends sfActions
         foreach ($registros as $registro)
         {
             $this -> renderText('<graph>
-			<title>Tiempo no programado</title>
+			<title>TNP</title>
 			<color>#ffdc44</color>
 			<visible_in_legend>false</visible_in_legend>
 			</graph>');
@@ -558,7 +570,7 @@ class ingreso_datosActions extends sfActions
         }
 
         $this -> renderText('<graph>
-      <title>Tiempo no programado</title>
+      <title>TNP</title>
       <color>#ffdc44</color>
       <visible_in_legend>false</visible_in_legend>
       </graph>');
@@ -881,7 +893,9 @@ class ingreso_datosActions extends sfActions
 
     public function executeListarCategoriasEventos()
     {
-        $categorias = CategoriaEventoPeer::doSelect(new Criteria());
+        $criteria = new Criteria();
+        $criteria -> add(CategoriaEventoPeer::CAT_ELIMINADO,0);
+        $categorias = CategoriaEventoPeer::doSelect($criteria);
 
         $result = array();
         $data = array();
@@ -889,9 +903,6 @@ class ingreso_datosActions extends sfActions
         foreach ($categorias as $categoria)
         {
             $fields = array();
-
-            //			$categoria = new CategoriaEvento();
-
             $fields['codigo'] = $categoria -> getCatCodigo();
             $fields['nombre'] = $categoria -> getCatNombre();
 
@@ -1871,25 +1882,49 @@ class ingreso_datosActions extends sfActions
         //se deben listar los metodos que no han sido eliminados
         //los metodos eliminados tiene en la columna MET_ELIMINADO un 1 los activos tiene un 0
         $conexion = new Criteria();
-        $conexion -> add(MetodoPeer::MET_ELIMINADO, FALSE);
+        $conexion -> add(MetodoPeer::MET_ELIMINADO, 0);
         $conexion -> addAscendingOrderByColumn(MetodoPeer::MET_NOMBRE);
         $metodos = MetodoPeer::doSelect($conexion);
-
+        
         $result = array();
         $data = array();
 
         foreach ($metodos as $metodo)
         {
             $fields = array();
-
             $fields['codigo'] = $metodo -> getMetCodigo();
             $fields['nombre'] = $metodo -> getMetNombre();
-
             $data[] = $fields;
         }
 
         $result['data'] = $data;
         return $this -> renderText(json_encode($result));
     }
+    
+    public function executeListarMetodosSinOrden()
+    {
+        //15 de mayo cambio maryit
+        //se deben listar los metodos que no han sido eliminados
+        //los metodos eliminados tiene en la columna MET_ELIMINADO un 1 los activos tiene un 0
+        $conexion = new Criteria();
+        $conexion -> add(MetodoPeer::MET_ELIMINADO, 0);
+//        $conexion -> addAscendingOrderByColumn(MetodoPeer::MET_NOMBRE);
+        $metodos = MetodoPeer::doSelect($conexion);
+        
+        $result = array();
+        $data = array();
+
+        foreach ($metodos as $metodo)
+        {
+            $fields = array();
+            $fields['codigo'] = $metodo -> getMetCodigo();
+            $fields['nombre'] = $metodo -> getMetNombre();
+            $data[] = $fields;
+        }
+
+        $result['data'] = $data;
+        return $this -> renderText(json_encode($result));
+    }
+    
 
 }

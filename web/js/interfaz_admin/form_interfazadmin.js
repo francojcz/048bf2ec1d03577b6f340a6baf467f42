@@ -68,8 +68,8 @@ var form_interfazdministrador = function(){
                                 }
                             }]
                         }, {
-                            title: 'Maestra categor&iacute;a evento',
-                            tabTip: ' Maestra categor&iacute;a evento, utilice esto para crear categorizar de los eventos',
+                            title: 'Categor&iacute;a evento',
+                            tabTip: 'Categor&iacute;a evento, utilice esto para crear categorizar de los eventos',
                             border: false,
                             style: 'padding: 10px;',
                             iconCls: 'x-icon-maestra',
@@ -82,8 +82,8 @@ var form_interfazdministrador = function(){
                                 }
                             }]
                         }, {
-                            title: 'Maestra evento',
-                            tabTip: ' Maestra evento, utilice esto para registrar los eventos que pueden causar perdidas',
+                            title: 'Evento',
+                            tabTip: 'Evento, utilice esto para registrar los eventos que pueden causar perdidas',
                             border: false,
                             style: 'padding: 10px;',
                             iconCls: 'x-icon-maestra',
@@ -127,7 +127,7 @@ var form_interfazdministrador = function(){
                     }, {
                         expanded: true,
                         items: [{
-                            title: 'Maestra tipo de <br/>identificaci&oacute;n',
+                            title: 'Tipo de <br/>identificaci&oacute;n',
                             style: 'padding: 10px;',
                             iconCls: 'x-icon-maestra',
                             border: false,
@@ -180,6 +180,19 @@ var form_interfazdministrador = function(){
                         listeners: {
                             activate: function(c){
                                 window.open(urlWeb + 'manual-tpm/main.html');
+                            }
+                        }
+                    }, {
+                        expanded: true,
+                        items: [{
+                            title: 'Videotutorial',
+                            style: 'padding: 10px;',
+                            border: false,
+                            html: '<div style="text-align:center;"> <font face="arial" size=6 color=#4E79B2><br/><br/>Videotutorial</font><br/><br/><img height=128 width=128  src="' + urlPrefix + '../images/iconos/videotutorial.png" alt="manual"/> </div>'
+                        }],
+                        listeners: {
+                            activate: function(c){
+                                window.open(urlWeb + 'videos/Administrador.mp4');
                             }
                         }
                     }, {

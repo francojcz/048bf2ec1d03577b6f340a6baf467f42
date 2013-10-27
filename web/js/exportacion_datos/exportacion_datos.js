@@ -139,6 +139,10 @@ Ext.onReady(function(){
             header: '',
             colspan: 1,
             align: 'center'
+        }, {
+            header: '',
+            colspan: 1,
+            align: 'center'
         }]]
     });
     
