@@ -24,7 +24,7 @@ all:
     class:        sfPropelDatabase
     param:
       classname:  PropelPDO
-      dsn:        mysql:dbname=tpmlabs_db;host=192.168.0.100
+      dsn:        mysql:dbname=tpmlabs_db;host=192.168.0.101
       username:   tpmlabs
       password:   tpmlabs
       encoding:   utf8
